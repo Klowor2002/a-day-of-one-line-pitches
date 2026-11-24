@@ -37,6 +37,9 @@ text can never be written silently.
 
 import os
 
+# The champion pitch — the exact text written to /output/entry.txt.
+PITCH_LINE = "Tell me your app idea in one sentence and I'll have an AI agent build you a working first version tonight — free to try, and if you don't like it, you've lost nothing but the sentence."
+
 MIN_CHARS = 1
 MAX_CHARS = 240
 
@@ -65,21 +68,20 @@ def check_pitch(text):
 
 
 def main():
-    pitch = "Tell me your app idea in one sentence and I'll have an AI agent build you a working first version tonight — free to try, and if you don't like it, you've lost nothing but the sentence."
-    problems = check_pitch(pitch)
+    problems = check_pitch(PITCH_LINE)
     if problems:
         raise SystemExit("gate failed: " + "; ".join(problems))
     out_dir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     os.makedirs(out_dir, exist_ok=True)
     path = os.path.join(out_dir, "entry.txt")
     with open(path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(pitch)
+        f.write(PITCH_LINE)
     # Re-read what was written and verify it byte for byte: the grader
-    # judges the file, not the string, so the file is what must match.
+    # judges the file, not the constant, so the file is what must match.
     with open(path, "r", encoding="utf-8") as f:
         written = f.read()
-    if written != pitch:
-        raise SystemExit(f"verify failed: file holds {written!r}, expected {pitch!r}")
+    if written != PITCH_LINE:
+        raise SystemExit(f"verify failed: file holds {written!r}, expected {PITCH_LINE!r}")
 
 
 if __name__ == "__main__":
